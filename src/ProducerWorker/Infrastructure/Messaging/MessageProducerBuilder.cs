@@ -2,13 +2,13 @@ using System;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 
-namespace ProducerWorker
+namespace ProducerWorker.Infrastructure.Messaging
 {
-    public class SampleProducerBuilder
+    public class MessageProducerBuilder : IMessageProducerBuilder
     {
         private readonly ProducerWorkerOptions _producerWorkerOptions;
 
-        public SampleProducerBuilder(IOptions<ProducerWorkerOptions> producerWorkerOptions)
+        public MessageProducerBuilder(IOptions<ProducerWorkerOptions> producerWorkerOptions)
         {
             _producerWorkerOptions = producerWorkerOptions?.Value ??
                                      throw new ArgumentNullException(nameof(producerWorkerOptions));

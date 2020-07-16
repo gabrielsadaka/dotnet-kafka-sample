@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProducerWorker.Infrastructure.Messaging;
 
 namespace ProducerWorker
 {
@@ -19,11 +20,9 @@ namespace ProducerWorker
 
                     services.AddOptions<ProducerWorkerOptions>();
 
-                    services.AddTransient(serviceProvider =>
-                    {
-                        var sampleProducerBuilder = serviceProvider.GetRequiredService<SampleProducerBuilder>();
-                        return sampleProducerBuilder.Build();
-                    });
+                    services.AddTransient<IMessageProducerBuilder, MessageProducerBuilder>();
+
+                    services.AddTransient<IMessageProducer, MessageProducer>();
                 });
         }
     }
