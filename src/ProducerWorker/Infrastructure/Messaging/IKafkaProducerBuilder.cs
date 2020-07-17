@@ -2,7 +2,7 @@ using Confluent.Kafka;
 
 namespace ProducerWorker.Infrastructure.Messaging
 {
-    public interface IMessageProducerBuilder
+    public interface IKafkaProducerBuilder
     {
         IProducer<string, string> Build();
     }

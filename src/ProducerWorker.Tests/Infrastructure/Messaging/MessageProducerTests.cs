@@ -15,7 +15,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public async Task ProduceShouldProduceMessageWithCorrectTopic()
         {
-            var stubMessageProducerBuilder = new Mock<IMessageProducerBuilder>();
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
             var mockProducer = new Mock<IProducer<string, string>>();
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
@@ -32,7 +32,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public async Task ProduceShouldProduceMessageWithCorrectKey()
         {
-            var stubMessageProducerBuilder = new Mock<IMessageProducerBuilder>();
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
             var mockProducer = new Mock<IProducer<string, string>>();
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
@@ -50,7 +50,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public async Task ProduceShouldProduceMessageWithSerialisedMessage()
         {
-            var stubMessageProducerBuilder = new Mock<IMessageProducerBuilder>();
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
             var mockProducer = new Mock<IProducer<string, string>>();
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
@@ -69,7 +69,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public async Task ProduceShouldFlushProducer()
         {
-            var stubMessageProducerBuilder = new Mock<IMessageProducerBuilder>();
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
             var mockProducer = new Mock<IProducer<string, string>>();
             stubMessageProducerBuilder
                 .Setup(x => x.Build())

@@ -18,9 +18,10 @@ namespace ProducerWorker
                 {
                     services.AddHostedService<Worker>();
 
-                    services.AddOptions<ProducerWorkerOptions>();
+                    services.AddOptions<ProducerWorkerOptions>()
+                        .Bind(hostContext.Configuration);
 
-                    services.AddTransient<IMessageProducerBuilder, MessageProducerBuilder>();
+                    services.AddTransient<IKafkaProducerBuilder, KafkaProducerBuilder>();
 
                     services.AddTransient<IMessageProducer, MessageProducer>();
                 });

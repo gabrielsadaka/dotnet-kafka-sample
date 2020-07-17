@@ -5,16 +5,16 @@ using Xunit;
 
 namespace ProducerWorker.Tests.Infrastructure.Messaging
 {
-    public class MessageProducerBuilderTests
+    public class KafkaProducerBuilderTests
     {
         [Fact]
         public void ConstructorShouldCreateSampleProducerBuilder()
         {
             var producerWorkerOptions = Options.Create(new ProducerWorkerOptions());
 
-            var sut = new MessageProducerBuilder(producerWorkerOptions);
+            var sut = new KafkaProducerBuilder(producerWorkerOptions);
 
-            Assert.IsType<MessageProducerBuilder>(sut);
+            Assert.IsType<KafkaProducerBuilder>(sut);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         {
             IOptions<ProducerWorkerOptions> producerWorkerOptions = null;
 
-            Assert.Throws<ArgumentNullException>(() => new MessageProducerBuilder(producerWorkerOptions));
+            Assert.Throws<ArgumentNullException>(() => new KafkaProducerBuilder(producerWorkerOptions));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         {
             var producerWorkerOptions = Options.Create(new ProducerWorkerOptions());
 
-            var sut = new MessageProducerBuilder(producerWorkerOptions);
+            var sut = new KafkaProducerBuilder(producerWorkerOptions);
 
             var producer = sut.Build();
 

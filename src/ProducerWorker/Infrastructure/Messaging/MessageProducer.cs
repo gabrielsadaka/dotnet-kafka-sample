@@ -8,16 +8,16 @@ namespace ProducerWorker.Infrastructure.Messaging
 {
     public class MessageProducer : IMessageProducer
     {
-        private readonly IMessageProducerBuilder _messageProducerBuilder;
+        private readonly IKafkaProducerBuilder _kafkaProducerBuilder;
 
-        public MessageProducer(IMessageProducerBuilder messageProducerBuilder)
+        public MessageProducer(IKafkaProducerBuilder kafkaProducerBuilder)
         {
-            _messageProducerBuilder = messageProducerBuilder;
+            _kafkaProducerBuilder = kafkaProducerBuilder;
         }
 
         public async Task ProduceAsync(IMessage message, CancellationToken cancellationToken)
         {
-            using (var producer = _messageProducerBuilder.Build())
+            using (var producer = _kafkaProducerBuilder.Build())
             {
                 var serialisedMessage = JObject.FromObject(message).ToString(Formatting.None);
 

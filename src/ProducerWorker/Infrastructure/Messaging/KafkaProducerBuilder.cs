@@ -4,11 +4,11 @@ using Microsoft.Extensions.Options;
 
 namespace ProducerWorker.Infrastructure.Messaging
 {
-    public class MessageProducerBuilder : IMessageProducerBuilder
+    public class KafkaProducerBuilder : IKafkaProducerBuilder
     {
         private readonly ProducerWorkerOptions _producerWorkerOptions;
 
-        public MessageProducerBuilder(IOptions<ProducerWorkerOptions> producerWorkerOptions)
+        public KafkaProducerBuilder(IOptions<ProducerWorkerOptions> producerWorkerOptions)
         {
             _producerWorkerOptions = producerWorkerOptions?.Value ??
                                      throw new ArgumentNullException(nameof(producerWorkerOptions));
