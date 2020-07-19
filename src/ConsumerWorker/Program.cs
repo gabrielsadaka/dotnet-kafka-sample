@@ -13,7 +13,13 @@ namespace ConsumerWorker
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) => { services.AddHostedService<Worker>(); });
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<Worker>();
+                    
+                    services.AddOptions<ConsumerWorkerOptions>()
+                        .Bind(hostContext.Configuration);
+                });
         }
     }
 }
