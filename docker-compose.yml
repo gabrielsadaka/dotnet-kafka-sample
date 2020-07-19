@@ -50,3 +50,8 @@ services:
       - broker
     environment:
       - DOTNET_ENVIRONMENT=Development
+
+  consumer:
+    build: src/ConsumerWorker
+    depends_on:
+      - broker
