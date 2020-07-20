@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProducerWorker.Messages\ProducerWorker.Messages.csproj" />
+    <ProjectReference Include="..\Common.Kafka\Common.Kafka.csproj" />
+  </ItemGroup>
 </Project>

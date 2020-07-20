@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Kafka;
 using Confluent.Kafka;
 using Newtonsoft.Json;
 

@@ -1,4 +1,4 @@
-namespace ProducerWorker.Infrastructure.Messaging
+namespace Common.Kafka
 {
     public interface IMessage
     {

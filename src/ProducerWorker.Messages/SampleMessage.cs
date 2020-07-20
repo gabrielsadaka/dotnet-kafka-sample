@@ -1,4 +1,4 @@
-using ProducerWorker.Infrastructure.Messaging;
+using Common.Kafka;
 
 namespace ProducerWorker.Messages
 {

@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Kafka;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ProducerWorker.Infrastructure.Messaging;
