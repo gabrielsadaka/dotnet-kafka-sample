@@ -2,15 +2,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ProducerWorker.Infrastructure.Messaging
 {
-    public class MessageProducer : IMessageProducer
+    public class KafkaMessageProducer : IMessageProducer
     {
         private readonly IKafkaProducerBuilder _kafkaProducerBuilder;
 
-        public MessageProducer(IKafkaProducerBuilder kafkaProducerBuilder)
+        public KafkaMessageProducer(IKafkaProducerBuilder kafkaProducerBuilder)
         {
             _kafkaProducerBuilder = kafkaProducerBuilder;
         }
@@ -19,7 +18,7 @@ namespace ProducerWorker.Infrastructure.Messaging
         {
             using (var producer = _kafkaProducerBuilder.Build())
             {
-                var serialisedMessage = JObject.FromObject(message).ToString(Formatting.None);
+                var serialisedMessage = JsonConvert.SerializeObject(message);
 
                 await producer.ProduceAsync(message.GetTopic(),
                     new Message<string, string> {Key = message.Key, Value = serialisedMessage}, cancellationToken);

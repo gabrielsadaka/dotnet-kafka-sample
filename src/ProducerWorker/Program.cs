@@ -23,7 +23,7 @@ namespace ProducerWorker
 
                     services.AddTransient<IKafkaProducerBuilder, KafkaProducerBuilder>();
 
-                    services.AddTransient<IMessageProducer, MessageProducer>();
+                    services.AddTransient<IMessageProducer, KafkaMessageProducer>();
                 });
         }
     }
