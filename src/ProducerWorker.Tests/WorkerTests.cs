@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka;
+using Common.Kafka.Producer;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ProducerWorker.Infrastructure.Messaging;
 using Xunit;
 
 namespace ProducerWorker.Tests

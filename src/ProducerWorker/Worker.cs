@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Kafka.Producer;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ProducerWorker.Infrastructure.Messaging;
 using ProducerWorker.Messages;
 
 namespace ProducerWorker

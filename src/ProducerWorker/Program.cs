@@ -1,6 +1,7 @@
+using Common.Kafka;
+using Common.Kafka.Producer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProducerWorker.Infrastructure.Messaging;
 
 namespace ProducerWorker
 {
@@ -18,8 +19,8 @@ namespace ProducerWorker
                 {
                     services.AddHostedService<Worker>();
 
-                    services.AddOptions<ProducerWorkerOptions>()
-                        .Bind(hostContext.Configuration);
+                    services.AddOptions<KafkaOptions>()
+                        .Bind(hostContext.Configuration.GetSection("Kafka"));
 
                     services.AddTransient<IKafkaProducerBuilder, KafkaProducerBuilder>();
 

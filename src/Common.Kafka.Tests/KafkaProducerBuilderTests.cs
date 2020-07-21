@@ -1,16 +1,16 @@
 using System;
+using Common.Kafka.Producer;
 using Microsoft.Extensions.Options;
-using ProducerWorker.Infrastructure.Messaging;
 using Xunit;
 
-namespace ProducerWorker.Tests.Infrastructure.Messaging
+namespace Common.Kafka.Tests
 {
     public class KafkaProducerBuilderTests
     {
         [Fact]
         public void ConstructorShouldCreateSampleProducerBuilder()
         {
-            var producerWorkerOptions = Options.Create(new ProducerWorkerOptions());
+            var producerWorkerOptions = Options.Create(new KafkaOptions());
 
             var sut = new KafkaProducerBuilder(producerWorkerOptions);
 
@@ -20,7 +20,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public void ConstructorShouldThrowIfOptionsIsNull()
         {
-            IOptions<ProducerWorkerOptions> producerWorkerOptions = null;
+            IOptions<KafkaOptions> producerWorkerOptions = null;
 
             Assert.Throws<ArgumentNullException>(() => new KafkaProducerBuilder(producerWorkerOptions));
         }
@@ -28,7 +28,7 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
         [Fact]
         public void BuildShouldReturnNonNullProducer()
         {
-            var producerWorkerOptions = Options.Create(new ProducerWorkerOptions());
+            var producerWorkerOptions = Options.Create(new KafkaOptions());
 
             var sut = new KafkaProducerBuilder(producerWorkerOptions);
 

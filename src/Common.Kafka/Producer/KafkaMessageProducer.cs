@@ -2,11 +2,10 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Kafka;
 using Confluent.Kafka;
 using Newtonsoft.Json;
 
-namespace ProducerWorker.Infrastructure.Messaging
+namespace Common.Kafka.Producer
 {
     public class KafkaMessageProducer : IMessageProducer
     {

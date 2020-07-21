@@ -1,6 +1,6 @@
-namespace ProducerWorker
+namespace Common.Kafka
 {
-    public class ProducerWorkerOptions
+    public class KafkaOptions
     {
         public string KafkaBootstrapServers { get; set; }
     }

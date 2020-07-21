@@ -1,13 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Kafka.Producer;
 using Confluent.Kafka;
 using Moq;
 using Newtonsoft.Json;
-using ProducerWorker.Infrastructure.Messaging;
-using ProducerWorker.Messages;
 using Xunit;
 
-namespace ProducerWorker.Tests.Infrastructure.Messaging
+namespace Common.Kafka.Tests
 {
     public class KafkaMessageProducerTests
     {
@@ -19,11 +18,11 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var sampleMessage = new SampleMessage("some-key-id", "some-property-value");
-            const string expectedTopic = "sample-messages";
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
+            const string expectedTopic = "fake-messages";
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
-            await sut.ProduceAsync(sampleMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
 
             mockProducer.Verify(x => x.ProduceAsync(expectedTopic,
                 It.IsAny<Message<string, string>>(),
@@ -38,13 +37,13 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var sampleMessage = new SampleMessage("some-key-id", "some-property-value");
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
-            await sut.ProduceAsync(sampleMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
 
             mockProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(),
-                It.Is<Message<string, string>>(i => i.Key == sampleMessage.Key),
+                It.Is<Message<string, string>>(i => i.Key == fakeMessage.Key),
                 It.IsAny<CancellationToken>()));
         }
 
@@ -56,14 +55,14 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var sampleMessage = new SampleMessage("some-key-id", "some-property-value");
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
-            await sut.ProduceAsync(sampleMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
 
             mockProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(),
                 It.Is<Message<string, string>>(i =>
-                    i.Value == JsonConvert.SerializeObject(sampleMessage)),
+                    i.Value == JsonConvert.SerializeObject(fakeMessage)),
                 It.IsAny<CancellationToken>()));
         }
 
@@ -75,10 +74,10 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var sampleMessage = new SampleMessage("some-key-id", "some-property-value");
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
-            await sut.ProduceAsync(sampleMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
 
             mockProducer.Verify(x => x.Flush(It.IsAny<CancellationToken>()));
         }
