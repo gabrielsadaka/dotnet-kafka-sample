@@ -6,7 +6,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Common.Kafka.Tests
+namespace Common.Kafka.Tests.Producer
 {
     public class KafkaMessageProducerTests
     {

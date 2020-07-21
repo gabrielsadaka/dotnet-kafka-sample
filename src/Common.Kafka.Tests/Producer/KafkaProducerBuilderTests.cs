@@ -3,16 +3,16 @@ using Common.Kafka.Producer;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace Common.Kafka.Tests
+namespace Common.Kafka.Tests.Producer
 {
     public class KafkaProducerBuilderTests
     {
         [Fact]
         public void ConstructorShouldCreateSampleProducerBuilder()
         {
-            var producerWorkerOptions = Options.Create(new KafkaOptions());
+            var kafkaOptions = Options.Create(new KafkaOptions());
 
-            var sut = new KafkaProducerBuilder(producerWorkerOptions);
+            var sut = new KafkaProducerBuilder(kafkaOptions);
 
             Assert.IsType<KafkaProducerBuilder>(sut);
         }
@@ -20,17 +20,17 @@ namespace Common.Kafka.Tests
         [Fact]
         public void ConstructorShouldThrowIfOptionsIsNull()
         {
-            IOptions<KafkaOptions> producerWorkerOptions = null;
+            IOptions<KafkaOptions> kafkaOptions = null;
 
-            Assert.Throws<ArgumentNullException>(() => new KafkaProducerBuilder(producerWorkerOptions));
+            Assert.Throws<ArgumentNullException>(() => new KafkaProducerBuilder(kafkaOptions));
         }
 
         [Fact]
         public void BuildShouldReturnNonNullProducer()
         {
-            var producerWorkerOptions = Options.Create(new KafkaOptions());
+            var kafkaOptions = Options.Create(new KafkaOptions());
 
-            var sut = new KafkaProducerBuilder(producerWorkerOptions);
+            var sut = new KafkaProducerBuilder(kafkaOptions);
 
             var producer = sut.Build();
 
