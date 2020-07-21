@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka;
@@ -20,9 +22,13 @@ namespace ProducerWorker.Infrastructure.Messaging
             using (var producer = _kafkaProducerBuilder.Build())
             {
                 var serialisedMessage = JsonConvert.SerializeObject(message);
+                var topic = Attribute.GetCustomAttributes(message.GetType())
+                    .OfType<MessageTopicAttribute>()
+                    .Single()
+                    .Topic;
+                var producedMessage = new Message<string, string> {Key = message.Key, Value = serialisedMessage};
 
-                await producer.ProduceAsync(message.Header.GetTopic(),
-                    new Message<string, string> {Key = message.Key, Value = serialisedMessage}, cancellationToken);
+                await producer.ProduceAsync(topic, producedMessage, cancellationToken);
 
                 producer.Flush(cancellationToken);
             }

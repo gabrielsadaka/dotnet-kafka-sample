@@ -16,15 +16,5 @@ namespace ProducerWorker.Tests.Messages
             Assert.Equal(key, sut.Key);
             Assert.Equal(someProperty, sut.SomeProperty);
         }
-
-        [Fact]
-        public void HeaderGetTopicReturnsCorrectTopic()
-        {
-            const string topic = "sample-messages";
-
-            var sut = new SampleMessage("some-key-1", "some-property-value");
-
-            Assert.Equal(topic, sut.Header.GetTopic());
-        }
     }
 }

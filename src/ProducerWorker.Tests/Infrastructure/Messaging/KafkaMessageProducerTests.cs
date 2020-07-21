@@ -20,11 +20,12 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
             var sampleMessage = new SampleMessage("some-key-id", "some-property-value");
+            const string expectedTopic = "sample-messages";
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
             await sut.ProduceAsync(sampleMessage, CancellationToken.None);
 
-            mockProducer.Verify(x => x.ProduceAsync(sampleMessage.Header.GetTopic(),
+            mockProducer.Verify(x => x.ProduceAsync(expectedTopic,
                 It.IsAny<Message<string, string>>(),
                 It.IsAny<CancellationToken>()));
         }
