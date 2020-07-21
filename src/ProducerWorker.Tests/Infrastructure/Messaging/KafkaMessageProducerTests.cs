@@ -24,7 +24,8 @@ namespace ProducerWorker.Tests.Infrastructure.Messaging
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
             await sut.ProduceAsync(sampleMessage, CancellationToken.None);
 
-            mockProducer.Verify(x => x.ProduceAsync(sampleMessage.GetTopic(), It.IsAny<Message<string, string>>(),
+            mockProducer.Verify(x => x.ProduceAsync(sampleMessage.Header.GetTopic(),
+                It.IsAny<Message<string, string>>(),
                 It.IsAny<CancellationToken>()));
         }
 

@@ -18,13 +18,13 @@ namespace ProducerWorker.Tests.Messages
         }
 
         [Fact]
-        public void GetTopicReturnsCorrectTopic()
+        public void HeaderGetTopicReturnsCorrectTopic()
         {
             const string topic = "sample-messages";
 
             var sut = new SampleMessage("some-key-1", "some-property-value");
 
-            Assert.Equal(topic, sut.GetTopic());
+            Assert.Equal(topic, sut.Header.GetTopic());
         }
     }
 }

@@ -21,7 +21,7 @@ namespace ProducerWorker.Infrastructure.Messaging
             {
                 var serialisedMessage = JsonConvert.SerializeObject(message);
 
-                await producer.ProduceAsync(message.GetTopic(),
+                await producer.ProduceAsync(message.Header.GetTopic(),
                     new Message<string, string> {Key = message.Key, Value = serialisedMessage}, cancellationToken);
 
                 producer.Flush(cancellationToken);

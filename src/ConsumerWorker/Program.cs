@@ -16,7 +16,7 @@ namespace ConsumerWorker
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
-                    
+
                     services.AddOptions<ConsumerWorkerOptions>()
                         .Bind(hostContext.Configuration);
                 });

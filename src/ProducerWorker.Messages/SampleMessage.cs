@@ -4,6 +4,9 @@ namespace ProducerWorker.Messages
 {
     public class SampleMessage : IMessage
     {
+        private const string Topic = "sample-messages";
+        private static readonly string Type = typeof(SampleMessage).FullName;
+
         public SampleMessage(string key, string someProperty)
         {
             Key = key;
@@ -12,10 +15,7 @@ namespace ProducerWorker.Messages
 
         public string SomeProperty { get; }
 
-        public string GetTopic()
-        {
-            return "sample-messages";
-        }
+        public MessageHeader Header { get; } = new MessageHeader(Type, Topic);
 
         public string Key { get; }
     }
