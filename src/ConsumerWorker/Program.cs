@@ -1,3 +1,5 @@
+using Common.Kafka;
+using Common.Kafka.Consumer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -17,8 +19,10 @@ namespace ConsumerWorker
                 {
                     services.AddHostedService<Worker>();
 
-                    services.AddOptions<ConsumerWorkerOptions>()
-                        .Bind(hostContext.Configuration);
+                    services.AddOptions<KafkaOptions>()
+                        .Bind(hostContext.Configuration.GetSection("Kafka"));
+
+                    services.AddKafkaConsumer(typeof(Program));
                 });
         }
     }

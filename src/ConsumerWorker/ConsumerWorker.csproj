@@ -8,4 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProducerWorker.Messages\ProducerWorker.Messages.csproj" />
+  </ItemGroup>
 </Project>

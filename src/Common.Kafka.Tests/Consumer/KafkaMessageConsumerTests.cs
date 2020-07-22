@@ -91,9 +91,10 @@ namespace Common.Kafka.Tests.Consumer
                 .Setup(x => x.Build())
                 .Returns(stubConsumer.Object);
 
+            // TODO: find better way to test than relying on async timing
             var sut = new KafkaMessageConsumer<FakeMessage>(stubMessageConsumerBuilder.Object, serviceProvider);
             Task.Run(() => sut.StartConsuming(cancellationTokenSource.Token));
-            await Task.Delay(50);
+            await Task.Delay(500);
             cancellationTokenSource.Cancel();
 
             mockMediator.Verify(x =>

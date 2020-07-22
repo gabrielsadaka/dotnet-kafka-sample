@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Common.Kafka.Consumer
 {
-    public class KafkaMessageConsumer<TMessage>
+    public class KafkaMessageConsumer<TMessage> : IKafkaMessageConsumer<TMessage>
         where TMessage : IMessage
     {
         private readonly IKafkaConsumerBuilder _kafkaConsumerBuilder;

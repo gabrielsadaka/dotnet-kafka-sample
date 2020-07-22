@@ -22,9 +22,7 @@ namespace ProducerWorker
                     services.AddOptions<KafkaOptions>()
                         .Bind(hostContext.Configuration.GetSection("Kafka"));
 
-                    services.AddTransient<IKafkaProducerBuilder, KafkaProducerBuilder>();
-
-                    services.AddTransient<IMessageProducer, KafkaMessageProducer>();
+                    services.AddKafkaProducer();
                 });
         }
     }
