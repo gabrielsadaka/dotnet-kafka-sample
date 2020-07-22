@@ -11,10 +11,10 @@ namespace Common.Kafka.Tests
             SomeProperty = someProperty;
         }
 
-        public string SomeProperty { get; }
+        public string SomeProperty { get; set; }
 
         public MessageHeader Header { get; } = new MessageHeader(Type);
 
-        public string Key { get; }
+        public string Key { get; set; }
     }
 }
