@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka.Consumer;
+using Common.Kafka.Tests.Fakes;
 using Confluent.Kafka;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka.Producer;
+using Common.Kafka.Tests.Fakes;
 using Confluent.Kafka;
 using Moq;
 using Newtonsoft.Json;

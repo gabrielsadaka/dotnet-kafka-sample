@@ -1,4 +1,4 @@
-namespace Common.Kafka.Tests
+namespace Common.Kafka.Tests.Fakes
 {
     [MessageTopic("fake-messages")]
     public class FakeMessage : IMessage
