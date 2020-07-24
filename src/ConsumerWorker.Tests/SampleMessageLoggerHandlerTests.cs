@@ -26,7 +26,7 @@ namespace ConsumerWorker.Tests
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((o, t) =>
                         string.Equals(
-                            $"Message received with key: {expectedKey} and value: {expectedSomePropertyValue}",
+                            $"Sample message received with key: {expectedKey} and value: {expectedSomePropertyValue}",
                             o.ToString(), StringComparison.InvariantCultureIgnoreCase)),
                     It.IsAny<Exception>(),
                     (Func<It.IsAnyType, Exception, string>) It.IsAny<object>()),

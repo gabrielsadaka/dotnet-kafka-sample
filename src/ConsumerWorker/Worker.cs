@@ -9,8 +9,8 @@ namespace ConsumerWorker
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
         private readonly IKafkaMessageConsumerStarter _kafkaMessageConsumerStarter;
+        private readonly ILogger<Worker> _logger;
 
         public Worker(ILogger<Worker> logger, IKafkaMessageConsumerStarter kafkaMessageConsumerStarter)
         {
@@ -21,7 +21,7 @@ namespace ConsumerWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _kafkaMessageConsumerStarter.StartConsumers(stoppingToken);
-            
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

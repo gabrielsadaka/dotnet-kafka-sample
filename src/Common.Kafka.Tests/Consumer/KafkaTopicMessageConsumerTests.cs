@@ -6,17 +6,20 @@ using Common.Kafka.Tests.Fakes;
 using Confluent.Kafka;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
 namespace Common.Kafka.Tests.Consumer
 {
-    public class KafkaMessageConsumerTests
+    public class KafkaTopicMessageConsumerTests
     {
         [Fact]
         public void StartConsumingSubscribesToCorrectTopic()
         {
+            const string expectedTopic = "fake-messages";
+            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
             var stubMediator = Mock.Of<IMediator>();
             var serviceProvider = BuildServiceProvider(stubMediator);
             var stubMessageConsumerBuilder = new Mock<IKafkaConsumerBuilder>();
@@ -29,15 +32,16 @@ namespace Common.Kafka.Tests.Consumer
                 .Setup(x => x.Build())
                 .Returns(mockConsumer.Object);
 
-            var sut = new KafkaMessageConsumer<FakeMessage>(stubMessageConsumerBuilder.Object, serviceProvider);
-            sut.StartConsuming(CancellationToken.None);
+            var sut = new KafkaTopicMessageConsumer(stubLogger, stubMessageConsumerBuilder.Object, serviceProvider);
+            sut.StartConsuming(expectedTopic, CancellationToken.None);
 
-            mockConsumer.Verify(x => x.Subscribe("fake-messages"));
+            mockConsumer.Verify(x => x.Subscribe(expectedTopic));
         }
 
         [Fact]
         public void StartConsumingConsumesMessageFromConsumer()
         {
+            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
             var stubMediator = Mock.Of<IMediator>();
             var serviceProvider = BuildServiceProvider(stubMediator);
             var stubMessageConsumerBuilder = new Mock<IKafkaConsumerBuilder>();
@@ -50,8 +54,8 @@ namespace Common.Kafka.Tests.Consumer
                 .Setup(x => x.Consume(It.IsAny<CancellationToken>()))
                 .Throws<OperationCanceledException>();
 
-            var sut = new KafkaMessageConsumer<FakeMessage>(stubMessageConsumerBuilder.Object, serviceProvider);
-            sut.StartConsuming(CancellationToken.None);
+            var sut = new KafkaTopicMessageConsumer(stubLogger, stubMessageConsumerBuilder.Object, serviceProvider);
+            sut.StartConsuming("fake-messages", CancellationToken.None);
 
             mockConsumer.Verify(x => x.Consume(It.IsAny<CancellationToken>()));
         }
@@ -59,6 +63,7 @@ namespace Common.Kafka.Tests.Consumer
         [Fact]
         public void StartConsumingClosesConsumerWhenCancelled()
         {
+            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
             var stubMediator = Mock.Of<IMediator>();
             var serviceProvider = BuildServiceProvider(stubMediator);
             var stubMessageConsumerBuilder = new Mock<IKafkaConsumerBuilder>();
@@ -70,8 +75,8 @@ namespace Common.Kafka.Tests.Consumer
                 .Setup(x => x.Build())
                 .Returns(mockConsumer.Object);
 
-            var sut = new KafkaMessageConsumer<FakeMessage>(stubMessageConsumerBuilder.Object, serviceProvider);
-            sut.StartConsuming(CancellationToken.None);
+            var sut = new KafkaTopicMessageConsumer(stubLogger, stubMessageConsumerBuilder.Object, serviceProvider);
+            sut.StartConsuming("fake-messages", CancellationToken.None);
 
             mockConsumer.Verify(x => x.Close());
         }
@@ -79,6 +84,7 @@ namespace Common.Kafka.Tests.Consumer
         [Fact]
         public async Task StartConsumingPublishesConsumedMessageToMediator()
         {
+            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
             var mockMediator = new Mock<IMediator>();
             var serviceProvider = BuildServiceProvider(mockMediator.Object);
             var cancellationTokenSource = new CancellationTokenSource();
@@ -93,14 +99,14 @@ namespace Common.Kafka.Tests.Consumer
                 .Returns(stubConsumer.Object);
 
             // TODO: find better way to test than relying on async timing
-            var sut = new KafkaMessageConsumer<FakeMessage>(stubMessageConsumerBuilder.Object, serviceProvider);
-            Task.Run(() => sut.StartConsuming(cancellationTokenSource.Token));
+            var sut = new KafkaTopicMessageConsumer(stubLogger, stubMessageConsumerBuilder.Object, serviceProvider);
+            Task.Run(() => sut.StartConsuming("fake-messages", cancellationTokenSource.Token));
             await Task.Delay(500);
             cancellationTokenSource.Cancel();
 
             mockMediator.Verify(x =>
                 x.Publish(
-                    It.Is<FakeMessage>(i => i.Key == fakeMessage.Key && i.SomeProperty == fakeMessage.SomeProperty),
+                    It.Is<object>(i => i.GetType() == typeof(FakeMessage)),
                     It.IsAny<CancellationToken>()));
         }
 

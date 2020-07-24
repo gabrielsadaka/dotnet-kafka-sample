@@ -21,25 +21,29 @@ namespace Common.Kafka.Consumer
 
         public void StartConsumers(CancellationToken cancellationToken)
         {
-            var messageTypesWithNotificationHandlers = GetMessageTypesWithNotificationHandlers(_services);
+            var topicsWithNotificationHandlers = GetTopicsWithNotificationHandlers(_services);
 
-            foreach (var messageType in messageTypesWithNotificationHandlers)
+            foreach (var topic in topicsWithNotificationHandlers)
             {
-                var genericKafkaMessageConsumerType = typeof(IKafkaMessageConsumer<>).MakeGenericType(messageType);
-                var kafkaMessageConsumer =
-                    (IKafkaMessageConsumer) _serviceProvider.GetRequiredService(genericKafkaMessageConsumerType);
+                var kafkaTopicMessageConsumer = _serviceProvider.GetRequiredService<IKafkaTopicMessageConsumer>();
 
-                Task.Run(() => kafkaMessageConsumer.StartConsuming(cancellationToken));
+                Task.Run(() => kafkaTopicMessageConsumer.StartConsuming(topic, cancellationToken));
             }
         }
 
-        private static IEnumerable<Type> GetMessageTypesWithNotificationHandlers(IServiceCollection services)
+        private static IEnumerable<string> GetTopicsWithNotificationHandlers(IServiceCollection services)
         {
-            return services
+            var messageTypesWithNotificationHandlers = services
                 .Where(s => s.ServiceType.IsGenericType &&
                             s.ServiceType.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
                 .Select(s => s.ServiceType.GetGenericArguments()[0])
                 .Where(s => typeof(IMessage).IsAssignableFrom(s))
+                .Distinct();
+
+            return messageTypesWithNotificationHandlers
+                .SelectMany(t => Attribute.GetCustomAttributes(t))
+                .OfType<MessageTopicAttribute>()
+                .Select(t => t.Topic)
                 .Distinct()
                 .ToList();
         }

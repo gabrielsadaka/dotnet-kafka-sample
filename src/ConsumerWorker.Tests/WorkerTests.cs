@@ -15,11 +15,11 @@ namespace ConsumerWorker.Tests
             var stubLogger = Mock.Of<ILogger<Worker>>();
             var mockKafkaMessageConsumerStarter = new Mock<IKafkaMessageConsumerStarter>();
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             var sut = new Worker(stubLogger, mockKafkaMessageConsumerStarter.Object);
             await sut.StartAsync(cancellationTokenSource.Token);
             cancellationTokenSource.Cancel();
-            
+
             mockKafkaMessageConsumerStarter.Verify(x => x.StartConsumers(It.IsAny<CancellationToken>()));
         }
     }

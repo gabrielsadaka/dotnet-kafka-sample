@@ -1,33 +1,32 @@
 using System;
-using System.Linq;
 using System.Threading;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Common.Kafka.Consumer
 {
-    public class KafkaMessageConsumer<TMessage> : IKafkaMessageConsumer<TMessage>
-        where TMessage : IMessage
+    public class KafkaTopicMessageConsumer : IKafkaTopicMessageConsumer
     {
         private readonly IKafkaConsumerBuilder _kafkaConsumerBuilder;
+        private readonly ILogger<KafkaTopicMessageConsumer> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public KafkaMessageConsumer(IKafkaConsumerBuilder kafkaConsumerBuilder, IServiceProvider serviceProvider)
+        public KafkaTopicMessageConsumer(ILogger<KafkaTopicMessageConsumer> logger,
+            IKafkaConsumerBuilder kafkaConsumerBuilder, IServiceProvider serviceProvider)
         {
+            _logger = logger;
             _kafkaConsumerBuilder = kafkaConsumerBuilder;
             _serviceProvider = serviceProvider;
         }
 
-        public void StartConsuming(CancellationToken cancellationToken)
+        public void StartConsuming(string topic, CancellationToken cancellationToken)
         {
             using (var consumer = _kafkaConsumerBuilder.Build())
             {
-                var topic = Attribute.GetCustomAttributes(typeof(TMessage))
-                    .OfType<MessageTopicAttribute>()
-                    .Single()
-                    .Topic;
-
+                _logger.LogInformation($"Starting consumer for {topic}");
                 consumer.Subscribe(topic);
 
                 try
@@ -35,7 +34,12 @@ namespace Common.Kafka.Consumer
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         var consumeResult = consumer.Consume(cancellationToken);
-                        var message = JsonConvert.DeserializeObject<TMessage>(consumeResult.Message.Value);
+                        var messageHeaderJson = JObject.Parse(consumeResult.Message.Value)["Header"];
+                        var messageHeader = messageHeaderJson?.ToObject<MessageHeader>();
+                        // TODO: log error if missing header
+                        var messageType = Type.GetType(messageHeader.Type);
+
+                        var message = JsonConvert.DeserializeObject(consumeResult.Message.Value, messageType);
 
                         using (var scope = _serviceProvider.CreateScope())
                         {

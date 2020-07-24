@@ -3,7 +3,7 @@ namespace Common.Kafka.Tests.Fakes
     [MessageTopic("fake-messages")]
     public class FakeMessage : IMessage
     {
-        private static readonly string Type = typeof(FakeMessage).FullName;
+        private static readonly string Type = typeof(FakeMessage).AssemblyQualifiedName;
 
         public FakeMessage(string key, string someProperty)
         {

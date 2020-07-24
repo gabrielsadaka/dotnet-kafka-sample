@@ -13,11 +13,9 @@ namespace Common.Kafka.Tests.Consumer
         [Fact]
         public void StartConsumersShouldStartSingleConsumerPerMessage()
         {
-            var mockKafkaMessageConsumer = new Mock<IKafkaMessageConsumer<FakeMessage>>();
-            var mockOtherKafkaMessageConsumer = new Mock<IKafkaMessageConsumer<OtherFakeMessage>>();
+            var mockKafkaMessageConsumer = new Mock<IKafkaTopicMessageConsumer>();
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(mockKafkaMessageConsumer.Object);
-            serviceCollection.AddSingleton(mockOtherKafkaMessageConsumer.Object);
             serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<FakeMessage>>());
             serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<OtherFakeMessage>>());
             serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<OtherFakeMessage>>());
@@ -26,8 +24,10 @@ namespace Common.Kafka.Tests.Consumer
             var sut = new KafkaMessageConsumerStarter(serviceProvider, serviceCollection);
             sut.StartConsumers(CancellationToken.None);
 
-            mockKafkaMessageConsumer.Verify(x => x.StartConsuming(It.IsAny<CancellationToken>()), Times.Once);
-            mockOtherKafkaMessageConsumer.Verify(x => x.StartConsuming(It.IsAny<CancellationToken>()), Times.Once);
+            mockKafkaMessageConsumer.Verify(x => x.StartConsuming("fake-messages", It.IsAny<CancellationToken>()),
+                Times.Once);
+            mockKafkaMessageConsumer.Verify(x => x.StartConsuming("other-fake-messages", It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

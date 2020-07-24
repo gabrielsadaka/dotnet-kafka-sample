@@ -18,7 +18,7 @@ namespace ConsumerWorker
         public Task Handle(SampleMessage notification, CancellationToken cancellationToken)
         {
             _logger.LogInformation(
-                $"Message received with key: {notification.Key} and value: {notification.SomeProperty}");
+                $"Sample message received with key: {notification.Key} and value: {notification.SomeProperty}");
 
             return Task.CompletedTask;
         }
