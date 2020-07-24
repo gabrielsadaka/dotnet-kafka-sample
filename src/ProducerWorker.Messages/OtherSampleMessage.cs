@@ -5,8 +5,6 @@ namespace ProducerWorker.Messages
     [MessageTopic("other-sample-messages")]
     public class OtherSampleMessage : IMessage
     {
-        private static readonly string Type = typeof(OtherSampleMessage).AssemblyQualifiedName;
-
         public OtherSampleMessage(string key, string someOtherProperty)
         {
             Key = key;
@@ -15,7 +13,7 @@ namespace ProducerWorker.Messages
 
         public string SomeOtherProperty { get; }
 
-        public MessageHeader Header { get; } = new MessageHeader(Type);
+        public MessageHeader Header { get; } = new MessageHeader();
 
         public string Key { get; }
     }

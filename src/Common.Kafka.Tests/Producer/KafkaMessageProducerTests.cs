@@ -56,7 +56,13 @@ namespace Common.Kafka.Tests.Producer
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value")
+            {
+                Header =
+                {
+                    Type = typeof(FakeMessage).AssemblyQualifiedName
+                }
+            };
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
             await sut.ProduceAsync(fakeMessage, CancellationToken.None);

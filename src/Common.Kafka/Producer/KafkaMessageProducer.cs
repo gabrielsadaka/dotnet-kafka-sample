@@ -25,6 +25,7 @@ namespace Common.Kafka.Producer
                     .OfType<MessageTopicAttribute>()
                     .Single()
                     .Topic;
+                message.Header.Type = message.GetType().AssemblyQualifiedName;
                 var producedMessage = new Message<string, string> {Key = message.Key, Value = serialisedMessage};
 
                 await producer.ProduceAsync(topic, producedMessage, cancellationToken);

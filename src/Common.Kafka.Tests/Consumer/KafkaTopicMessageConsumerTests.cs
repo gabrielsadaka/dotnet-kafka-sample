@@ -84,16 +84,22 @@ namespace Common.Kafka.Tests.Consumer
         [Fact]
         public async Task StartConsumingPublishesConsumedMessageToMediator()
         {
-            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value")
+            {
+                Header =
+                {
+                    Type = typeof(FakeMessage).AssemblyQualifiedName
+                }
+            };
+            var cancellationTokenSource = new CancellationTokenSource();
             var mockMediator = new Mock<IMediator>();
             var serviceProvider = BuildServiceProvider(mockMediator.Object);
-            var cancellationTokenSource = new CancellationTokenSource();
-            var stubMessageConsumerBuilder = new Mock<IKafkaConsumerBuilder>();
+            var stubLogger = Mock.Of<ILogger<KafkaTopicMessageConsumer>>();
             var stubConsumer = new Mock<IConsumer<string, string>>();
-            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
             stubConsumer
                 .Setup(x => x.Consume(It.IsAny<CancellationToken>()))
                 .Returns(BuildFakeConsumeResult(fakeMessage));
+            var stubMessageConsumerBuilder = new Mock<IKafkaConsumerBuilder>();
             stubMessageConsumerBuilder
                 .Setup(x => x.Build())
                 .Returns(stubConsumer.Object);
