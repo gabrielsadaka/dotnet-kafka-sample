@@ -128,7 +128,7 @@ namespace Common.Kafka.Tests.Consumer
                     Value = JsonConvert.SerializeObject(fakeMessage),
                     Headers = new Headers
                     {
-                        { "message-type", Encoding.UTF8.GetBytes(fakeMessage.GetType().AssemblyQualifiedName) }
+                        {"message-type", Encoding.UTF8.GetBytes(fakeMessage.GetType().AssemblyQualifiedName)}
                     }
                 }
             };

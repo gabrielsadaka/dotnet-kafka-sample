@@ -24,12 +24,14 @@ namespace ProducerWorker
             var count = 0;
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _messageProducer.ProduceAsync(new SampleMessage($"sample-key-{count}", "sample-property"),
-                    stoppingToken);
-                await _messageProducer.ProduceAsync(
-                    new AnotherSampleMessage($"another-sample-key-{count}", "another-property"), stoppingToken);
-                await _messageProducer.ProduceAsync(
-                    new OtherSampleMessage($"other-sample-key-{count}", "some-other-property"), stoppingToken);
+                var sampleMessage = new SampleMessage($"sample-key-{count}", "sample-property");
+                await _messageProducer.ProduceAsync(sampleMessage.Key, sampleMessage, stoppingToken);
+                
+                var anotherSampleMessage = new AnotherSampleMessage($"another-sample-key-{count}", "another-property");
+                await _messageProducer.ProduceAsync(anotherSampleMessage.Key, anotherSampleMessage, stoppingToken);
+                
+                var otherSampleMessage = new OtherSampleMessage($"other-sample-key-{count}", "some-other-property");
+                await _messageProducer.ProduceAsync(otherSampleMessage.Key, otherSampleMessage, stoppingToken);
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(1000, stoppingToken);

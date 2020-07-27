@@ -22,7 +22,7 @@ namespace ProducerWorker.Tests
             await sut.StartAsync(cancellationTokenSource.Token);
             cancellationTokenSource.Cancel();
 
-            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<SampleMessage>(),
+            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(), It.IsAny<SampleMessage>(),
                 It.IsAny<CancellationToken>()));
         }
 
@@ -38,7 +38,7 @@ namespace ProducerWorker.Tests
             await sut.StartAsync(cancellationTokenSource.Token);
             cancellationTokenSource.Cancel();
 
-            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<AnotherSampleMessage>(),
+            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(), It.IsAny<AnotherSampleMessage>(),
                 It.IsAny<CancellationToken>()));
         }
 
@@ -54,7 +54,7 @@ namespace ProducerWorker.Tests
             await sut.StartAsync(cancellationTokenSource.Token);
             cancellationTokenSource.Cancel();
 
-            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<OtherSampleMessage>(),
+            mockMessageProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(), It.IsAny<OtherSampleMessage>(),
                 It.IsAny<CancellationToken>()));
         }
     }

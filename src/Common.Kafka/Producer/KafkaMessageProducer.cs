@@ -17,8 +17,9 @@ namespace Common.Kafka.Producer
             _kafkaProducerBuilder = kafkaProducerBuilder;
         }
 
-        public async Task ProduceAsync(IMessage message, CancellationToken cancellationToken)
+        public async Task ProduceAsync(string key, IMessage message, CancellationToken cancellationToken)
         {
+            // TODO: cache kafka producer as singleton
             using (var producer = _kafkaProducerBuilder.Build())
             {
                 var serialisedMessage = JsonConvert.SerializeObject(message);
@@ -26,11 +27,11 @@ namespace Common.Kafka.Producer
                     .OfType<MessageTopicAttribute>()
                     .Single()
                     .Topic;
-                
+
                 var messageType = message.GetType().AssemblyQualifiedName;
                 var producedMessage = new Message<string, string>
                 {
-                    Key = message.Key,
+                    Key = key,
                     Value = serialisedMessage,
                     Headers = new Headers
                     {

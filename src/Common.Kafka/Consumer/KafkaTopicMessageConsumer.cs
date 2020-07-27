@@ -34,7 +34,7 @@ namespace Common.Kafka.Consumer
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         var consumeResult = consumer.Consume(cancellationToken);
-                        
+
                         // TODO: log error if missing header
                         var messageTypeEncoded = consumeResult.Message.Headers.GetLastBytes("message-type");
                         var messageTypeHeader = Encoding.UTF8.GetString(messageTypeEncoded);

@@ -5,6 +5,6 @@ namespace Common.Kafka.Producer
 {
     public interface IMessageProducer
     {
-        Task ProduceAsync(IMessage message, CancellationToken cancellationToken);
+        Task ProduceAsync(string key, IMessage message, CancellationToken cancellationToken);
     }
 }
