@@ -20,17 +20,15 @@ namespace Common.Kafka.Producer
         {
             using (var producer = _kafkaProducerBuilder.Build())
             {
+                message.Header.Type = message.GetType().AssemblyQualifiedName;
                 var serialisedMessage = JsonConvert.SerializeObject(message);
                 var topic = Attribute.GetCustomAttributes(message.GetType())
                     .OfType<MessageTopicAttribute>()
                     .Single()
                     .Topic;
-                message.Header.Type = message.GetType().AssemblyQualifiedName;
                 var producedMessage = new Message<string, string> {Key = message.Key, Value = serialisedMessage};
 
                 await producer.ProduceAsync(topic, producedMessage, cancellationToken);
-
-                producer.Flush(cancellationToken);
             }
         }
     }

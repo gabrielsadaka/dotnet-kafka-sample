@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,7 +26,8 @@ namespace Common.Kafka.Consumer
             {
                 var kafkaTopicMessageConsumer = _serviceProvider.GetRequiredService<IKafkaTopicMessageConsumer>();
 
-                Task.Run(() => kafkaTopicMessageConsumer.StartConsuming(topic, cancellationToken));
+                new Thread(() => kafkaTopicMessageConsumer.StartConsuming(topic, cancellationToken))
+                    .Start();
             }
         }
 

@@ -72,21 +72,5 @@ namespace Common.Kafka.Tests.Producer
                     i.Value == JsonConvert.SerializeObject(fakeMessage)),
                 It.IsAny<CancellationToken>()));
         }
-
-        [Fact]
-        public async Task ProduceShouldFlushProducer()
-        {
-            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
-            var mockProducer = new Mock<IProducer<string, string>>();
-            stubMessageProducerBuilder
-                .Setup(x => x.Build())
-                .Returns(mockProducer.Object);
-            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
-
-            var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
-            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
-
-            mockProducer.Verify(x => x.Flush(It.IsAny<CancellationToken>()));
-        }
     }
 }

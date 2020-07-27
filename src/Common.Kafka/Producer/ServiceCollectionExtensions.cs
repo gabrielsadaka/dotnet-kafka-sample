@@ -6,9 +6,9 @@ namespace Common.Kafka.Producer
     {
         public static IServiceCollection AddKafkaProducer(this IServiceCollection services)
         {
-            services.AddTransient<IKafkaProducerBuilder, KafkaProducerBuilder>();
+            services.AddSingleton<IKafkaProducerBuilder, KafkaProducerBuilder>();
 
-            services.AddTransient<IMessageProducer, KafkaMessageProducer>();
+            services.AddSingleton<IMessageProducer, KafkaMessageProducer>();
 
             return services;
         }
