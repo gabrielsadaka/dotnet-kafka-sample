@@ -8,38 +8,42 @@ using Newtonsoft.Json;
 
 namespace Common.Kafka.Producer
 {
-    public class KafkaMessageProducer : IMessageProducer
+    public class KafkaMessageProducer : IMessageProducer, IDisposable
     {
-        private readonly IKafkaProducerBuilder _kafkaProducerBuilder;
+        private readonly Lazy<IProducer<string, string>> _cachedProducer;
 
         public KafkaMessageProducer(IKafkaProducerBuilder kafkaProducerBuilder)
         {
-            _kafkaProducerBuilder = kafkaProducerBuilder;
+            _cachedProducer = new Lazy<IProducer<string, string>>(() => kafkaProducerBuilder.Build());
         }
 
         public async Task ProduceAsync(string key, IMessage message, CancellationToken cancellationToken)
         {
-            // TODO: cache kafka producer as singleton
-            using (var producer = _kafkaProducerBuilder.Build())
+            var serialisedMessage = JsonConvert.SerializeObject(message);
+            var topic = Attribute.GetCustomAttributes(message.GetType())
+                .OfType<MessageTopicAttribute>()
+                .Single()
+                .Topic;
+
+            var messageType = message.GetType().AssemblyQualifiedName;
+            var producedMessage = new Message<string, string>
             {
-                var serialisedMessage = JsonConvert.SerializeObject(message);
-                var topic = Attribute.GetCustomAttributes(message.GetType())
-                    .OfType<MessageTopicAttribute>()
-                    .Single()
-                    .Topic;
-
-                var messageType = message.GetType().AssemblyQualifiedName;
-                var producedMessage = new Message<string, string>
+                Key = key,
+                Value = serialisedMessage,
+                Headers = new Headers
                 {
-                    Key = key,
-                    Value = serialisedMessage,
-                    Headers = new Headers
-                    {
-                        {"message-type", Encoding.UTF8.GetBytes(messageType)}
-                    }
-                };
+                    {"message-type", Encoding.UTF8.GetBytes(messageType)}
+                }
+            };
 
-                await producer.ProduceAsync(topic, producedMessage, cancellationToken);
+            await _cachedProducer.Value.ProduceAsync(topic, producedMessage, cancellationToken);
+        }
+
+        public void Dispose()
+        {
+            if (_cachedProducer.IsValueCreated)
+            {
+                _cachedProducer.Value.Dispose();
             }
         }
     }

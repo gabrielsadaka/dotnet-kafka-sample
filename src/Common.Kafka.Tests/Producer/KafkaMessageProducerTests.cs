@@ -88,5 +88,55 @@ namespace Common.Kafka.Tests.Producer
                     Encoding.UTF8.GetString(i.Headers.GetLastBytes("message-type")) == expectedMessageType),
                 It.IsAny<CancellationToken>()));
         }
+
+        [Fact]
+        public async Task ProduceShouldUseASingleProducerForMultipleRequests()
+        {
+            var mockMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
+            var stubProducer = new Mock<IProducer<string, string>>();
+            mockMessageProducerBuilder
+                .Setup(x => x.Build())
+                .Returns(stubProducer.Object);
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
+
+            var sut = new KafkaMessageProducer(mockMessageProducerBuilder.Object);
+            await sut.ProduceAsync(fakeMessage.Key, fakeMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage.Key, fakeMessage, CancellationToken.None);
+            await sut.ProduceAsync(fakeMessage.Key, fakeMessage, CancellationToken.None);
+
+            mockMessageProducerBuilder.Verify(x => x.Build(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DisposeShouldDisposeProducerIfProduceHasBeenCalled()
+        {
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
+            var mockProducer = new Mock<IProducer<string, string>>();
+            stubMessageProducerBuilder
+                .Setup(x => x.Build())
+                .Returns(mockProducer.Object);
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
+
+            var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
+            await sut.ProduceAsync(fakeMessage.Key, fakeMessage, CancellationToken.None);
+            sut.Dispose();
+
+            mockProducer.Verify(x => x.Dispose());
+        }
+
+        [Fact]
+        public void DisposeShouldNotDisposeProducerIfProduceHasNotBeenCalled()
+        {
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
+            var mockProducer = new Mock<IProducer<string, string>>();
+            stubMessageProducerBuilder
+                .Setup(x => x.Build())
+                .Returns(mockProducer.Object);
+
+            var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
+            sut.Dispose();
+
+            mockProducer.Verify(x => x.Dispose(), Times.Never);
+        }
     }
 }
