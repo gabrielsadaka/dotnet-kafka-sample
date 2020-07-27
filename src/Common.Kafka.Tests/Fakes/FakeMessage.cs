@@ -11,8 +11,6 @@ namespace Common.Kafka.Tests.Fakes
 
         public string SomeProperty { get; set; }
 
-        public MessageHeader Header { get; } = new MessageHeader();
-
         public string Key { get; set; }
     }
 }

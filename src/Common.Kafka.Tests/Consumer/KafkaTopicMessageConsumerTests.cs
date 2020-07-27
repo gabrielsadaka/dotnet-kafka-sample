@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka.Consumer;
@@ -84,13 +85,7 @@ namespace Common.Kafka.Tests.Consumer
         [Fact]
         public async Task StartConsumingPublishesConsumedMessageToMediator()
         {
-            var fakeMessage = new FakeMessage("some-key-id", "some-property-value")
-            {
-                Header =
-                {
-                    Type = typeof(FakeMessage).AssemblyQualifiedName
-                }
-            };
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
             var cancellationTokenSource = new CancellationTokenSource();
             var mockMediator = new Mock<IMediator>();
             var serviceProvider = BuildServiceProvider(mockMediator.Object);
@@ -130,7 +125,11 @@ namespace Common.Kafka.Tests.Consumer
             {
                 Message = new Message<string, string>
                 {
-                    Value = JsonConvert.SerializeObject(fakeMessage)
+                    Value = JsonConvert.SerializeObject(fakeMessage),
+                    Headers = new Headers
+                    {
+                        { "message-type", Encoding.UTF8.GetBytes(fakeMessage.GetType().AssemblyQualifiedName) }
+                    }
                 }
             };
         }

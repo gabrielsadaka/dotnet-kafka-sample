@@ -1,10 +1,10 @@
 using System;
+using System.Text;
 using System.Threading;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Common.Kafka.Consumer
 {
@@ -34,10 +34,11 @@ namespace Common.Kafka.Consumer
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         var consumeResult = consumer.Consume(cancellationToken);
-                        var messageHeaderJson = JObject.Parse(consumeResult.Message.Value)["Header"];
-                        var messageHeader = messageHeaderJson?.ToObject<MessageHeader>();
+                        
                         // TODO: log error if missing header
-                        var messageType = Type.GetType(messageHeader.Type);
+                        var messageTypeEncoded = consumeResult.Message.Headers.GetLastBytes("message-type");
+                        var messageTypeHeader = Encoding.UTF8.GetString(messageTypeEncoded);
+                        var messageType = Type.GetType(messageTypeHeader);
 
                         var message = JsonConvert.DeserializeObject(consumeResult.Message.Value, messageType);
 

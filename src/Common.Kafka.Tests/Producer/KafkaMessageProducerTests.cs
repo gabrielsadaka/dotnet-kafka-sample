@@ -1,3 +1,4 @@
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Kafka.Producer;
@@ -56,13 +57,7 @@ namespace Common.Kafka.Tests.Producer
             stubMessageProducerBuilder
                 .Setup(x => x.Build())
                 .Returns(mockProducer.Object);
-            var fakeMessage = new FakeMessage("some-key-id", "some-property-value")
-            {
-                Header =
-                {
-                    Type = typeof(FakeMessage).AssemblyQualifiedName
-                }
-            };
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
 
             var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
             await sut.ProduceAsync(fakeMessage, CancellationToken.None);
@@ -70,6 +65,26 @@ namespace Common.Kafka.Tests.Producer
             mockProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(),
                 It.Is<Message<string, string>>(i =>
                     i.Value == JsonConvert.SerializeObject(fakeMessage)),
+                It.IsAny<CancellationToken>()));
+        }
+
+        [Fact]
+        public async Task ProduceShouldProduceMessageTypeAsHeader()
+        {
+            var stubMessageProducerBuilder = new Mock<IKafkaProducerBuilder>();
+            var mockProducer = new Mock<IProducer<string, string>>();
+            stubMessageProducerBuilder
+                .Setup(x => x.Build())
+                .Returns(mockProducer.Object);
+            var expectedMessageType = typeof(FakeMessage).AssemblyQualifiedName;
+            var fakeMessage = new FakeMessage("some-key-id", "some-property-value");
+
+            var sut = new KafkaMessageProducer(stubMessageProducerBuilder.Object);
+            await sut.ProduceAsync(fakeMessage, CancellationToken.None);
+
+            mockProducer.Verify(x => x.ProduceAsync(It.IsAny<string>(),
+                It.Is<Message<string, string>>(i =>
+                    Encoding.UTF8.GetString(i.Headers.GetLastBytes("message-type")) == expectedMessageType),
                 It.IsAny<CancellationToken>()));
         }
     }

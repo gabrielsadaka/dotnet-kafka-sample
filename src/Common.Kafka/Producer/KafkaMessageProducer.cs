@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
@@ -20,13 +21,22 @@ namespace Common.Kafka.Producer
         {
             using (var producer = _kafkaProducerBuilder.Build())
             {
-                message.Header.Type = message.GetType().AssemblyQualifiedName;
                 var serialisedMessage = JsonConvert.SerializeObject(message);
                 var topic = Attribute.GetCustomAttributes(message.GetType())
                     .OfType<MessageTopicAttribute>()
                     .Single()
                     .Topic;
-                var producedMessage = new Message<string, string> {Key = message.Key, Value = serialisedMessage};
+                
+                var messageType = message.GetType().AssemblyQualifiedName;
+                var producedMessage = new Message<string, string>
+                {
+                    Key = message.Key,
+                    Value = serialisedMessage,
+                    Headers = new Headers
+                    {
+                        {"message-type", Encoding.UTF8.GetBytes(messageType)}
+                    }
+                };
 
                 await producer.ProduceAsync(topic, producedMessage, cancellationToken);
             }

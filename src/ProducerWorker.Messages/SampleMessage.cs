@@ -13,8 +13,6 @@ namespace ProducerWorker.Messages
 
         public string SomeProperty { get; }
 
-        public MessageHeader Header { get; } = new MessageHeader();
-
         public string Key { get; }
     }
 }
