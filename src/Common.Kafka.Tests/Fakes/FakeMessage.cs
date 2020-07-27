@@ -9,8 +9,8 @@ namespace Common.Kafka.Tests.Fakes
             SomeProperty = someProperty;
         }
 
-        public string SomeProperty { get; set; }
-
         public string Key { get; set; }
+
+        public string SomeProperty { get; set; }
     }
 }

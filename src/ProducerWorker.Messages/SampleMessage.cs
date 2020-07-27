@@ -11,8 +11,8 @@ namespace ProducerWorker.Messages
             SomeProperty = someProperty;
         }
 
-        public string SomeProperty { get; }
-
         public string Key { get; }
+
+        public string SomeProperty { get; }
     }
 }
