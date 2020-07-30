@@ -17,6 +17,11 @@ namespace Common.Kafka.Producer
             _cachedProducer = new Lazy<IProducer<string, string>>(() => kafkaProducerBuilder.Build());
         }
 
+        public void Dispose()
+        {
+            if (_cachedProducer.IsValueCreated) _cachedProducer.Value.Dispose();
+        }
+
         public async Task ProduceAsync(string key, IMessage message, CancellationToken cancellationToken)
         {
             var serialisedMessage = JsonConvert.SerializeObject(message);
@@ -37,14 +42,6 @@ namespace Common.Kafka.Producer
             };
 
             await _cachedProducer.Value.ProduceAsync(topic, producedMessage, cancellationToken);
-        }
-
-        public void Dispose()
-        {
-            if (_cachedProducer.IsValueCreated)
-            {
-                _cachedProducer.Value.Dispose();
-            }
         }
     }
 }

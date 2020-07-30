@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Common.Kafka;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ProducerWorker.Messages;
@@ -18,7 +19,7 @@ namespace ConsumerWorker.Tests
             const string expectedKey = "some-key";
             const string expectedSomePropertyValue = "some-property-value";
             var sampleMessage = new SampleMessage(expectedKey, expectedSomePropertyValue);
-            sut.Handle(sampleMessage, CancellationToken.None);
+            sut.Handle(new MessageNotification<SampleMessage>(sampleMessage), CancellationToken.None);
 
             mockLogger.Verify(
                 x => x.Log(

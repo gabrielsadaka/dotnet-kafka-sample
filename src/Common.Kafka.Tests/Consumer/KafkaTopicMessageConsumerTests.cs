@@ -107,7 +107,7 @@ namespace Common.Kafka.Tests.Consumer
 
             mockMediator.Verify(x =>
                 x.Publish(
-                    It.Is<object>(i => i.GetType() == typeof(FakeMessage)),
+                    It.Is<object>(i => i.GetType() == typeof(MessageNotification<FakeMessage>)),
                     It.IsAny<CancellationToken>()));
         }
 

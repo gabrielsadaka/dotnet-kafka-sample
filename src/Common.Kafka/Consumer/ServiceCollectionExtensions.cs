@@ -12,8 +12,8 @@ namespace Common.Kafka.Consumer
             services.AddMediatR(handlerAssemblyMarkerTypes);
 
             // TODO: is there a way to avoid this? Better way to discover handlers?
-            services.AddTransient<IKafkaMessageConsumerStarter>(serviceProvider =>
-                new KafkaMessageConsumerStarter(serviceProvider, services));
+            services.AddTransient<IKafkaMessageConsumerManager>(serviceProvider =>
+                new KafkaMessageConsumerManager(serviceProvider, services));
 
             services.AddTransient<IKafkaConsumerBuilder, KafkaConsumerBuilder>();
 

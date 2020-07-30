@@ -16,12 +16,12 @@ namespace Common.Kafka.Tests.Consumer
             var mockKafkaMessageConsumer = new Mock<IKafkaTopicMessageConsumer>();
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(mockKafkaMessageConsumer.Object);
-            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<FakeMessage>>());
-            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<OtherFakeMessage>>());
-            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<OtherFakeMessage>>());
+            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<MessageNotification<FakeMessage>>>());
+            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<MessageNotification<OtherFakeMessage>>>());
+            serviceCollection.AddTransient(s => Mock.Of<INotificationHandler<MessageNotification<OtherFakeMessage>>>());
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            var sut = new KafkaMessageConsumerStarter(serviceProvider, serviceCollection);
+            var sut = new KafkaMessageConsumerManager(serviceProvider, serviceCollection);
             sut.StartConsumers(CancellationToken.None);
 
             mockKafkaMessageConsumer.Verify(x => x.StartConsuming("fake-messages", It.IsAny<CancellationToken>()),

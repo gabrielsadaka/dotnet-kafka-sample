@@ -41,11 +41,13 @@ namespace Common.Kafka.Consumer
                         var messageType = Type.GetType(messageTypeHeader);
 
                         var message = JsonConvert.DeserializeObject(consumeResult.Message.Value, messageType);
+                        var messageNotificationType = typeof(MessageNotification<>).MakeGenericType(messageType);
+                        var messageNotification = Activator.CreateInstance(messageNotificationType, message);
 
                         using (var scope = _serviceProvider.CreateScope())
                         {
                             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                            mediator.Publish(message, cancellationToken).GetAwaiter().GetResult();
+                            mediator.Publish(messageNotification, cancellationToken).GetAwaiter().GetResult();
                         }
                     }
                 }

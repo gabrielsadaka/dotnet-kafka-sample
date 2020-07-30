@@ -13,7 +13,7 @@ namespace ConsumerWorker.Tests
         public async Task ExecuteAsyncShouldStartKafkaMessageConsumers()
         {
             var stubLogger = Mock.Of<ILogger<Worker>>();
-            var mockKafkaMessageConsumerStarter = new Mock<IKafkaMessageConsumerStarter>();
+            var mockKafkaMessageConsumerStarter = new Mock<IKafkaMessageConsumerManager>();
             var cancellationTokenSource = new CancellationTokenSource();
 
             var sut = new Worker(stubLogger, mockKafkaMessageConsumerStarter.Object);

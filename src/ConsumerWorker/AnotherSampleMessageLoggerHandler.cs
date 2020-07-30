@@ -1,12 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Kafka;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using ProducerWorker.Messages;
 
 namespace ConsumerWorker
 {
-    public class AnotherSampleMessageLoggerHandler : INotificationHandler<AnotherSampleMessage>
+    public class AnotherSampleMessageLoggerHandler : INotificationHandler<MessageNotification<AnotherSampleMessage>>
     {
         private readonly ILogger<AnotherSampleMessageLoggerHandler> _logger;
 
@@ -15,10 +16,12 @@ namespace ConsumerWorker
             _logger = logger;
         }
 
-        public Task Handle(AnotherSampleMessage notification, CancellationToken cancellationToken)
+        public Task Handle(MessageNotification<AnotherSampleMessage> notification, CancellationToken cancellationToken)
         {
+            var message = notification.Message;
+
             _logger.LogInformation(
-                $"Another sample message received with key: {notification.Key} and value: {notification.AnotherProperty}");
+                $"Another sample message received with key: {message.Key} and value: {message.AnotherProperty}");
 
             return Task.CompletedTask;
         }

@@ -9,18 +9,18 @@ namespace ConsumerWorker
 {
     public class Worker : BackgroundService
     {
-        private readonly IKafkaMessageConsumerStarter _kafkaMessageConsumerStarter;
+        private readonly IKafkaMessageConsumerManager _kafkaMessageConsumerManager;
         private readonly ILogger<Worker> _logger;
 
-        public Worker(ILogger<Worker> logger, IKafkaMessageConsumerStarter kafkaMessageConsumerStarter)
+        public Worker(ILogger<Worker> logger, IKafkaMessageConsumerManager kafkaMessageConsumerManager)
         {
             _logger = logger;
-            _kafkaMessageConsumerStarter = kafkaMessageConsumerStarter;
+            _kafkaMessageConsumerManager = kafkaMessageConsumerManager;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _kafkaMessageConsumerStarter.StartConsumers(stoppingToken);
+            _kafkaMessageConsumerManager.StartConsumers(stoppingToken);
 
             while (!stoppingToken.IsCancellationRequested)
             {

@@ -7,12 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Common.Kafka.Consumer
 {
-    public class KafkaMessageConsumerStarter : IKafkaMessageConsumerStarter
+    public class KafkaMessageConsumerManager : IKafkaMessageConsumerManager
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IServiceCollection _services;
 
-        public KafkaMessageConsumerStarter(IServiceProvider serviceProvider, IServiceCollection services)
+        public KafkaMessageConsumerManager(IServiceProvider serviceProvider, IServiceCollection services)
         {
             _serviceProvider = serviceProvider;
             _services = services;
@@ -37,6 +37,9 @@ namespace Common.Kafka.Consumer
                 .Where(s => s.ServiceType.IsGenericType &&
                             s.ServiceType.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
                 .Select(s => s.ServiceType.GetGenericArguments()[0])
+                .Where(s => s.IsGenericType &&
+                            s.GetGenericTypeDefinition() == typeof(MessageNotification<>))
+                .Select(s => s.GetGenericArguments()[0])
                 .Where(s => typeof(IMessage).IsAssignableFrom(s))
                 .Distinct();
 
