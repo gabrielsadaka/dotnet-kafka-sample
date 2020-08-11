@@ -24,8 +24,7 @@ namespace Common.Kafka.Consumer
             var consumerConfig = new ConsumerConfig(config)
             {
                 GroupId = _kafkaOptions.ConsumerGroupId,
-                AutoOffsetReset = AutoOffsetReset.Earliest,
-                EnableAutoCommit = false
+                AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
             var consumerBuilder = new ConsumerBuilder<string, string>(consumerConfig);
